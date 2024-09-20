@@ -1,0 +1,115 @@
+version: '3.2'
+
+services:
+  pharma-processor:
+    container_name: pharma-processor
+    build:
+      context: .
+      dockerfile: ./tp/Dockerfile
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    depends_on:
+      - validator
+    expose:
+      - 4004
+    command: bash -c "python3 ./tp.py -vvv -C tcp://validator:4004"
+    # stop_signal: SIGKILL
+    volumes:
+      - '.:/project/sawtooth-pharma/'
+
+  pharma-client:
+    container_name: pharma-client
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    environment:
+      - 'http_proxy=${http_proxy}'
+      - 'https_proxy=${https_proxy}'
+      - 'no_proxy=rest-api,validator,${no_proxy}'
+    volumes:
+      - '.:/project/sawtooth-pharma/'
+    depends_on:
+      - validator
+      - sawtooth-rest-api
+    expose:
+      - 5000
+      - 5010
+      - 5020
+      - 5030
+    ports:
+      - '5000:5000'
+      - '5010:5010'
+      - '5020:5020'
+      - '5030:5030'
+    entrypoint: "bash -c \"sawtooth keygen --force pharma && tail -f /dev/null\" && chmod +x script.sh"
+    stop_signal: SIGKILL
+
+  sawtooth-rest-api:
+    container_name: rest-api
+    image: hyperledger/sawtooth-rest-api:1.2
+    expose:
+      - 8008
+    ports:
+      - '8008:8008'
+    depends_on:
+      - validator
+    entrypoint: sawtooth-rest-api -C tcp://validator:4004 --bind rest-api:8008
+
+  settings-tp:
+    image: hyperledger/sawtooth-settings-tp:1.2
+    container_name: pharma_settings_tp
+    depends_on:
+      - validator
+    command: settings-tp -vv -C tcp://validator:4004
+
+  devmode-engine:
+    image: hyperledger/sawtooth-devmode-engine-rust:1.2
+    container_name: sawtooth-devmode-engine-rust-default
+    depends_on:
+      - validator
+    entrypoint: devmode-engine-rust -C tcp://validator:5050
+
+  validator:
+    container_name: validator
+    image: hyperledger/sawtooth-validator:1.2
+    expose:
+      - 4004
+    ports:
+      - "4004:4004"
+    entrypoint: "bash -c \"\
+        if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then \
+          sawadm keygen --force && \
+          sawtooth keygen my_key && \
+          sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
+          sawset proposal create \
+            -k /root/.sawtooth/keys/my_key.priv \
+            sawtooth.consensus.algorithm.name=Devmode \
+            sawtooth.consensus.algorithm.version=0.1 \
+            -o config.batch && \
+          sawadm genesis config-genesis.batch config.batch; \
+        else \
+          echo 'Keys already exist, skipping key generation and genesis setup.'; \
+        fi && \
+        sawtooth-validator -vv \
+          --endpoint tcp://validator:8800 \
+          --bind component:tcp://eth0:4004 \
+          --bind network:tcp://eth0:8800 \
+          --bind consensus:tcp://eth0:5050 \
+        \""
+
+  postgres:
+    image: postgres:alpine
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: postgres
+    ports:
+      - '5433:5432'

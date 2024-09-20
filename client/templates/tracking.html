@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Tracking</title>
+  <meta name="viewport" content="width = device-width, initial-scale = 1">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  </script>
+  <script>
+    $(document).ready(function () {
+
+
+      $('.modal').modal();
+      $('.modal').closeModal();
+    });
+
+  </script>
+
+  <style>
+    .body {
+      background-color: cyan
+    }
+
+    * {
+      font-family: "courier new"
+    }
+
+    .parallax-container {
+
+      height: "100%";
+    }
+
+    input {
+      font-size: 20px;
+    }
+
+    label {
+      font-size: 20px;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    #only {
+      min-height: 50vh;
+      background-color: cyan;
+    }
+
+    main {
+      flex: 1 0 auto;
+    }
+  </style>
+
+  <script>
+
+    $(document).ready(function () {
+      $('.parallax').parallax();
+    });
+    $(document).ready(function () {
+      $('.modal-trigger').leanModal();
+      $('select').material_select();
+    });
+    $(document).ready(function () {
+      $('select').formSelect();
+    });
+
+
+
+  </script>
+  <style>
+    .modal {
+      max-height: 100%;
+      overflow: visible
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div class="center-align">
+    <h4 class="!"><b>Tracking</b></h4>
+    <img src="https://funkyimg.com/i/2SUj9.png" />
+  </div>
+  </br>
+  <div class="row">
+    <div class="col">
+      <h3><b>Manufacturer:</b>{{manufacturer}}</h3>
+    </div>
+    <div class="col">
+      <h3><b>Distributor:</b>{{distributer}}</h3>
+    </div>
+    <div class="col">
+      <h3><b>Pharmacy:</b>{{pharmacy}}</h3>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col">
+        <h3><b>Medicine:</b>{{medicine}}</h3>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h3><b>Batch ID:</b>{{batchid}}</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h3><b>Manufacturer date:</b>{{manu_date}}</h3>
+    </div>
+    <div class="col">
+        <h3><b>Expiry date:</b>{{exp_date}}</h3>
+      </div>
+  </div>
+  <br />
+  <br />
+  <br />
+
+</body>

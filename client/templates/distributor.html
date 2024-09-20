@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Distributor</title>
+  <meta name="viewport" content="width = device-width, initial-scale = 1">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  </script>
+  <script>
+    $(document).ready(function () {
+
+
+      $('.modal').modal();
+      $('.modal').closeModal();
+    });
+
+  </script>
+
+  <style>
+    * {
+      font-family: "courier new"
+    }
+
+    .parallax-container {
+
+      height: "100%";
+    }
+
+    input {
+      font-size: 20px;
+    }
+
+    label {
+      font-size: 20px;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1 0 auto;
+    }
+  </style>
+
+  <script>
+
+    $(document).ready(function () {
+      $('.parallax').parallax();
+    });
+    $(document).ready(function () {
+      $('.modal-trigger').leanModal();
+      $('select').material_select();
+    });
+    $(document).ready(function () {
+      $('select').formSelect();
+    });
+
+
+
+  </script>
+  <style>
+    .modal {
+      overflow: visible
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div class="center-align">
+    <h4 class="!"><b>Distributor's Homepage</b></h4>
+
+  </div>
+
+  <div class="parallax-container">
+    <div class="parallax"><img src="https://funkyimg.com/i/2SHP8.png"></div>
+
+    <div class="row">
+      <br />
+      <br />
+      <div class="center-align col s4">
+        <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id01"><i
+            class="material-icons left">call_received</i>Reject/Accept shipment</a><br /><br />
+        <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id02"><i
+            class="material-icons left">send</i>Send to pharmacies</a><br /><br />
+        <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id04"><i
+            class="material-icons left">list</i>List Medicines</a><br /><br />
+            <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id05"><i
+              class="material-icons left">list</i>List Medicines Request</a><br /><br />
+        
+          </div>
+    </div>
+
+
+    <a class="modal-trigger" href="#id01"></a>
+    <div id="id01" class="modal" style="width:50%;height:100%">
+
+      <div class="container">
+        <br />
+
+        <form action="http://localhost:5020/recieveFromManufacturer" method="POST">
+          <h6><b>Please select an option given below</b></h6>
+
+          <br />
+          <br />
+          <div>
+            <input type="radio" id="check" class="group1 blue-text text-darken-2 white " name="choice" value="Accept">
+            <label for="check">Accept</label>
+            <input type="radio" id="checkr" class="group1 blue-text text-darken-2 white" name="choice" value="Reject">
+            <label for="checkr">Reject</label>
+            <h6><b>Distributor<b>
+                  <input type="text" name="distributer" placeholder="Enter the distributor's  name" /></h6>
+            <h6><b>Batch ID<b>
+                  <input type="text" name="batchid" placeholder="Enter the Batch ID" /></h6>
+            <h6><b>Date<b>
+                  <input type="text" name="date" placeholder="Enter the Date" /></h6>
+            <h6><b>Manufacturer<b>
+                  <input type="text" name="manufacturer" placeholder="Enter the pharmacy name" /></h6>
+
+          </div>
+          <br />
+          <br />
+          <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+            type="submit" name="action">Submit
+            <i class="material-icons right">send</i>
+          </button>
+          <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
+            onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
+            target="_self">Close</a>
+        </form>
+      </div>
+    </div>
+
+    <a class="modal-trigger" href="#id02"></a>
+    <div id="id02" class="modal" style="width:50%;height:60%">
+
+      <div class="container">
+        <br />
+
+        <form action="http://localhost:5020/sendToPharmacy" method="POST">
+
+
+          <h6><b>Distributor's name<b>
+                <input type="text" name = "distributer" placeholder="Enter the distributors name" /></h6>
+          <h6><b>pharmacies's name<b>
+                <input type="text" name = "pharmacy"placeholder="Enter the pharmacies name" /></h6>
+          <h6><b>Medicine<b>
+                <input type="text" name = "batchid" placeholder="Enter the medicine name" /></h6>
+
+          <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+            type="submit" name="action">Submit
+            <i class="material-icons right">send</i>
+          </button>
+          <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
+            onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
+            target="_self">Close</a>
+
+        </form>
+      </div>
+    </div> <a class="modal-trigger" href="#id03"></a>
+    <div id="id03" class="modal" style="width:50%;height:50%">
+      <div class="container">
+        <form action="http://localhost:5020/listHos" method="POST">
+          <h6><b>Distributor<b>
+                <input type="text" name="distributor" placeholder="Enter the distributor's  name" /></h6>
+          <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+            type="submit" name="action">Submit
+            <i class="material-icons right">send</i>
+          </button>
+
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <a class="modal-trigger" href="#id05"></a>
+  <div id="id05" class="modal" style="width:50%;height:50%">
+    <div class="container">
+      <form action="http://localhost:5020/listMedReq" method="POST">
+        <h6><b>Distributor<b>
+              <input type="text" name="distributer" placeholder="Enter the distributor's name" /></h6>
+        <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+          type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+
+        </button>
+      </form>
+    </div>
+  </div>
+  <a class="modal-trigger" href="#id04"></a>
+  <div id="id04" class="modal" style="width:50%;height:50%">
+    <div class="container">
+      <form action="http://localhost:5020/listMed" method="POST">
+        <h6><b>Distributor<b>
+              <input type="text" name="distributer" placeholder="Enter the distributor's name" /></h6>
+        <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+          type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+
+        </button>
+      </form>
+    </div>
+  </div>
+</body>

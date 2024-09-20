@@ -1,0 +1,22 @@
+Running at function: send_to_rest_api()
+URL: http://rest-api:8008/batches
+Running at function: send_to_rest_api()
+URL: http://rest-api:8008/batch_statuses?id=0a00006b71db03771295d08a231f27a89e5c103681ccb51683ebbb5e4fe8ea172bf0f1b3e562ae170a69a1785019e7223c53f2cb6a6b294d175c4c5655ad1657&wait=5
+manufacture response: {
+  "data": [
+    {
+      "id": "0a00006b71db03771295d08a231f27a89e5c103681ccb51683ebbb5e4fe8ea172bf0f1b3e562ae170a69a1785019e7223c53f2cb6a6b294d175c4c5655ad1657",
+      "invalid_transactions": [],
+      "status": "COMMITTED"
+    }
+  ],
+  "link": "http://rest-api:8008/batch_statuses?id=0a00006b71db03771295d08a231f27a89e5c103681ccb51683ebbb5e4fe8ea172bf0f1b3e562ae170a69a1785019e7223c53f2cb6a6b294d175c4c5655ad1657&wait=5"
+}
+Listing clients:  ae78c62c13f4fd5ff402af01a89a0eb16c80684fe0dbd0edd05f1a77f27cd151bf34c4
+Running at function: send_to_rest_api()
+URL: http://rest-api:8008/state/ae78c62c13f4fd5ff402af01a89a0eb16c80684fe0dbd0edd05f1a77f27cd151bf34c4
+{
+  "data": "SGlldWxj",
+  "head": "69042fe26d4debf74a6c4e8aef6059511f9ef55e99d8831a4d9ea602727f0327076fbcf17faf43445d7bfddc19de1a33ac83d098acab54ab336f4988c5906c46",
+  "link": "http://rest-api:8008/state/ae78c62c13f4fd5ff402af01a89a0eb16c80684fe0dbd0edd05f1a77f27cd151bf34c4?head=69042fe26d4debf74a6c4e8aef6059511f9ef55e99d8831a4d9ea602727f0327076fbcf17faf43445d7bfddc19de1a33ac83d098acab54ab336f4988c5906c46"
+}

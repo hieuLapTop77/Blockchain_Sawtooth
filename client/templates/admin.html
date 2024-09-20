@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin</title>
+    <meta name="viewport" content="width = device-width, initial-scale = 1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.modal').modal();
+            $('.modal').closeModal();
+        });
+
+    </script>
+
+    <style>
+        * {
+            font-family: "courier new"
+        }
+
+        .parallax-container {
+
+            height: "100%";
+        }
+
+        input {
+            font-size: 20px;
+        }
+
+        label {
+            font-size: 20px;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+    </style>
+
+    <script>
+
+        $(document).ready(function () {
+            $('.parallax').parallax();
+        });
+
+    </script>
+    <style>
+        .modal {
+            max-height: 100%;
+            overflow: visible
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="center-align">
+        <h4 class="!"><b>Admin's Homepage</b></h4>
+
+    </div>
+
+    <div class="parallax-container">
+        <div class="parallax"><img src="https://funkyimg.com/i/2SHP8.png"></div>
+
+        <div class="row">
+            <br />
+            <br />
+            <div class="center-align col s4">
+                <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id02"><i
+                        class="material-icons left">add</i>Add manufacturers</a><br /><br />
+                <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id01"><i
+                        class="material-icons left">add</i>Add distributors</a><br /><br />
+                <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id03"><i
+                        class="material-icons left">add</i>Add pharmacies<br />/pharmacies</a><br /><br />
+
+                <form action="http://localhost:5000/listManu" method="POST">
+
+                    <button
+                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+                        type="submit" name="action">List manufacturers
+                        <i class="material-icons right">list</i>
+                    </button>
+                </form>
+                <br />
+                <form action="http://localhost:5000/listDist" method="POST">
+
+                    <button
+                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+                        type="submit" name="action">List distributors
+                        <i class="material-icons right">list</i>
+                    </button>
+                </form>
+                <br />
+                <form action="http://localhost:5000/listPharma" method="POST">
+                    <button
+                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+                        type="submit" name="action">List pharmacies
+                        <i class="material-icons right">list</i>
+                    </button>
+                </form>
+                <br />
+            </div>
+        </div>
+
+
+        <a class="modal-trigger" href="#id01"></a>
+        <div id="id01" class="modal" style="width:50%;height:40%">
+
+            <div class="container">
+                <br />
+
+                <form action="http://localhost:5000/addDist" method="POST">
+
+                    <h6><b>Distributor's name<b>
+                                <input type="text" name="distributer" placeholder="Enter the distributor's name" /></h6>
+                    <button
+                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+                        type="submit" name="action">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
+                        onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
+                        target="_self">Close</a>
+
+                </form>
+            </div>
+        </div>
+
+        <a class="modal-trigger" href="#id02"></a>
+        <div id="id02" class="modal" style="width:50%;height:60%">
+
+            <div class="container">
+                <br />
+
+                <form action="http://localhost:5000/addManu" method="POST">
+                    <h6><b>Manufacturer's name<b>
+                                <input type="text" name="manufacturer" placeholder="Enter the Manufacturer's name" />
+                    </h6>
+
+                    <button
+                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+                        type="submit" name="action">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
+                        onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
+                        target="_self">Close</a>
+
+                </form>
+            </div>
+        </div>
+        <a class="modal-trigger" href="#id03"></a>
+        <div id="id03" class="modal" style="width:50%;height:50%">
+            <div class="container">
+                <br />
+
+                <form action="http://localhost:5000/addPharma" method="POST">
+                    <h6><b>Pharmacy's name<b>
+                                <input type="text" name="pharmacy" placeholder="Enter the Pharmacy's name" /></h6>
+
+                    <button
+                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
+                        type="submit" name="action">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
+                        onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
+                        target="_self">Close</a>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>
