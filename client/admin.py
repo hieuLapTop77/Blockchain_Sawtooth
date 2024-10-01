@@ -1,12 +1,18 @@
 #!/usr/bin/python3
+
+import os
+
 from admin_class import admin
 from flask import Flask, render_template, request
+
+os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 app = Flask(__name__)
 
 app.config['DEBUG'] = True
-app.config['LC_ALL'] = "C.UTF-8"
-app.config['LANG'] = "C.UTF-8"
+app.config['LC_ALL'] = "en_US.UTF-8"
+app.config['LANG'] = "en_US.UTF-8"
+app.config['JSON_AS_ASCII'] = False
 
 
 @app.route("/")
@@ -30,11 +36,11 @@ def addManu():
     if request.method == 'POST':
         a = admin()
         manufacturer = request.form['manufacturer']
-        print("Manufacturer: ", manufacturer)
-        k = a.addManufacturer_v1(manufacturer)
+        print("Tên nhà sản xuất: ", manufacturer)
+        k = a.addManufacturer(manufacturer)
         if (k == "COMMITTED"):
             return render_template('alert.html', command="ADDED MANUFACTURER", port="5000")
-        return render_template('alert.html', command="SOMETHING FAILED! \nOOPS!", port="5000")
+        return render_template('alert.html', command="SOMETHING FAILED!", port="5000")
     return render_template('admin.html')
 
 

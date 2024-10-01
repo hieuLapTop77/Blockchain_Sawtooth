@@ -7,7 +7,6 @@ import random
 import sys
 import time
 
-import psycopg2
 import requests
 import yaml
 from sawtooth_sdk.protobuf.batch_pb2 import Batch, BatchHeader, BatchList
@@ -15,12 +14,32 @@ from sawtooth_sdk.protobuf.transaction_pb2 import Transaction, TransactionHeader
 from sawtooth_signing import CryptoFactory, ParseError, create_context
 from sawtooth_signing.secp256k1 import Secp256k1PrivateKey
 
-logging.basicConfig(filename='client.log', level=logging.DEBUG)
-LOGGER = logging.getLogger(__name__)
-
 parser = optparse.OptionParser()
 parser.add_option('-U', '--url', action="store", dest="url",
                   default="http://rest-api:8008")
+
+
+def setup_logger():
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+
+    logging.basicConfig(
+        filename='client.log',
+        level=logging.DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        encoding='utf-8'
+    )
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.DEBUG)
+
+    console_format = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter(console_format)
+    logging.getLogger().addHandler(console_handler)
+
+
+# Sử dụng logger
+LOGGER = logging.getLogger(__name__)
 
 
 def hash(data):
@@ -56,169 +75,81 @@ public_key = signer.get_public_key().as_hex()
 base_url = 'http://rest-api:8008'
 
 
-def connect_db():
-    try:
-        conn = psycopg2.connect(
-            dbname="postgres",
-            user="postgres",
-            password="123",
-            host="postgres",
-            port="5432"
-        )
-        return conn
-    except Exception as e:
-        print(f"Error connecting to the database: {e}")
-        return None
-
-
 def getBatchAddress(batchID):
     return TRACKING_TABLE + hash(batchID)[:58]
 
 
-def getManufacturerAddress(manufacturerName):
-    return FAMILY_NAME + MANUFACTURER_ENTRIES + hash(manufacturerName)[:58]
+def getManufacturerAddress(manufacturer_name):
+    return FAMILY_NAME + MANUFACTURER_ENTRIES + hash(manufacturer_name)[:58]
 
 
-def getDistributerAddress(distributerName, qualifier="has"):
-    distributerName = str(distributerName)
-    return FAMILY_NAME + DISTRIBUTER_ENTRIES + hash(distributerName)[:57] + hash(qualifier)[0]
+def getDistributerAddress(distributer_name, qualifier="has"):
+    distributer_name = str(distributer_name)
+    return FAMILY_NAME + DISTRIBUTER_ENTRIES + hash(distributer_name)[:57] + hash(qualifier)[0]
 
 
-def getPharmacyAddress(pharmacyname, qualifier="has"):
-    return FAMILY_NAME + PHARMACY_ENTRIES + hash(pharmacyname)[:57] + hash(qualifier)[0]
+def getPharmacyAddress(pharmacy_name, qualifier="has"):
+    return FAMILY_NAME + PHARMACY_ENTRIES + hash(pharmacy_name)[:57] + hash(qualifier)[0]
 
 
-# def addManufacturer(manufacturerName):
-#     logging.info('addManufacturer({})'.format(manufacturerName))
-#     input_address_list = [MANUFACTURERS_TABLE]
-#     output_address_list = [MANUFACTURERS_TABLE,
-#                            getManufacturerAddress(manufacturerName)]
-#     response = wrap_and_send("addManufacturer", manufacturerName,
-#                              input_address_list, output_address_list, wait=5)
-#     # print ("manufacture response: {}".format(response))
-#     return yaml.safe_load(response)['data'][0]['status']
-
-
-def addManufacturer(manufacturerName):
-    logging.info('addManufacturer({})'.format(manufacturerName))
+def addManufacturer(manufacturer_name):
+    logging.info('addManufacturer %s', manufacturer_name)
     input_address_list = [MANUFACTURERS_TABLE]
     output_address_list = [MANUFACTURERS_TABLE,
-                           getManufacturerAddress(manufacturerName)]
+                           getManufacturerAddress(manufacturer_name)]
     response = wrap_and_send(
-        "addManufacturer", manufacturerName, input_address_list, output_address_list, wait=5
-    )
-    conn = connect_db()
-    cursor = conn.cursor()
-    # Lưu vào PostgreSQL
-    if yaml.safe_load(response)['data'][0]['status'] == 'COMMITTED':
-        cursor.execute(
-            "INSERT INTO public.manufacturers (name, address_input, address_output) VALUES (%s, %s, %s)",
-            (manufacturerName, MANUFACTURERS_TABLE,
-                getManufacturerAddress(manufacturerName))
-        )
-        conn.commit()
-
+        "addManufacturer", manufacturer_name, input_address_list, output_address_list, wait=5)
+    print("manufacture response: ", response)
     return yaml.safe_load(response)['data'][0]['status']
 
 
-def addDistributer(distributerName):
-    logging.info('addDistributer({})'.format(distributerName))
-    distHasAddress = getDistributerAddress(distributerName, "has")
-    distReqAddress = getDistributerAddress(distributerName, "request")
+def addPharmacy(pharmacy):
+    logging.info('addPharmacy %s', pharmacy)
+    input_address_list = [PHARMACY_TABLE]
+    output_address_list = [PHARMACY_TABLE, getPharmacyAddress(pharmacy)]
+    response = wrap_and_send("addPharmacy", pharmacy,
+                             input_address_list, output_address_list, wait=5)
+    return yaml.safe_load(response)['data'][0]['status']
+
+
+def addDistributer(distributer_name):
+    logging.info('addDistributer %s', distributer_name)
     input_address_list = [DISTRIBUTERS_TABLE]
     output_address_list = [DISTRIBUTERS_TABLE,
-                           distHasAddress, distReqAddress]
-    response = wrap_and_send(
-        "addDistributor", distributerName, input_address_list, output_address_list, wait=5
-    )
-    conn = connect_db()
-    cursor = conn.cursor()
-    # Lưu vào PostgreSQL
-    if yaml.safe_load(response)['data'][0]['status'] == 'COMMITTED':
-        cursor.execute(
-            "INSERT INTO distributers (name, has_address, req_address, address_input) VALUES (%s, %s, %s, %s)",
-            (distributerName, distHasAddress,
-                distReqAddress, DISTRIBUTERS_TABLE)
-        )
-        conn.commit()
-
+                           getDistributerAddress(distributer_name)]
+    response = wrap_and_send("addDistributor", distributer_name,
+                             input_address_list, output_address_list, wait=5)
     return yaml.safe_load(response)['data'][0]['status']
 
 
-def addPharmacy(PharmacyName):
-    logging.info('addPharmacy({})'.format(PharmacyName))
-    PharmacyReqAddress = getPharmacyAddress(PharmacyName, "request")
-    PharmacyHasAddress = getPharmacyAddress(PharmacyName, "has")
-    input_address_list = [PHARMACY_TABLE]
-    output_address_list = [PHARMACY_TABLE,
-                           PharmacyHasAddress, PharmacyReqAddress]
-    response = wrap_and_send(
-        "addPharmacy", PharmacyName, input_address_list, output_address_list, wait=5
-    )
-    conn = connect_db()
-    cursor = conn.cursor()
-    # Lưu vào PostgreSQL
-    if yaml.safe_load(response)['data'][0]['status'] == 'COMMITTED':
-        cursor.execute(
-            "INSERT INTO pharmacies (name, has_address, req_address, address_input) VALUES (%s, %s, %s, %s)",
-            (PharmacyName, PharmacyHasAddress,
-                PharmacyReqAddress, PHARMACY_TABLE)
-        )
-        conn.commit()
-
-    return yaml.safe_load(response)['data'][0]['status']
-
-# def addPharmacy(pharmacy):
-#     logging.info('addPharmacy({})'.format(pharmacy))
-#     input_address_list = [PHARMACY_TABLE]
-#     output_address_list = [PHARMACY_TABLE, getPharmacyAddress(pharmacy)]
-#     response = wrap_and_send("addPharmacy", pharmacy,
-#                              input_address_list, output_address_list, wait=5)
-#     # print ("manufacture response: {}".format(response))
-#     return yaml.safe_load(response)['data'][0]['status']
-
-
-# def addDistributer(distributerName):
-#     logging.info('addDistributer({})'.format(distributerName))
-#     input_address_list = [DISTRIBUTERS_TABLE]
-#     output_address_list = [DISTRIBUTERS_TABLE,
-#                            getDistributerAddress(distributerName)]
-#     response = wrap_and_send("addDistributor", distributerName,
-#                              input_address_list, output_address_list, wait=5)
-#     # print ("manufacture response: {}".format(response))
-#     return yaml.safe_load(response)['data'][0]['status']
-
-
-def manufacture(manufacturerName, medicineName):
-    logging.info('manufacture({})'.format(medicineName))
-    l = [manufacturerName, medicineName]
-    manufacturerAddress = getManufacturerAddress(manufacturerName)
+def manufacture(manufacturer_name, medicine_name):
+    logging.info('manufacture %s', medicine_name)
+    l = [manufacturer_name, medicine_name]
+    manufacturer_address = getManufacturerAddress(manufacturer_name)
     command_string = ','.join(l)
-    input_address_list = [MANUFACTURERS_TABLE, manufacturerAddress]
-    output_address_list = [manufacturerAddress]
+    input_address_list = [MANUFACTURERS_TABLE, manufacturer_address]
+    output_address_list = [manufacturer_address]
     response = wrap_and_send(
         "manufacture", command_string, input_address_list, output_address_list, wait=5)
-    # print ("manufacture response: {}".format(response))
     return yaml.safe_load(response)['data'][0]['status']
 
 
-def giveToDistributor(manufacturerName, distributer, medicineName):
-    l = [manufacturerName, distributer, medicineName]
+def giveToDistributor(manufacturer_name, distributer, medicine_name):
+    l = [manufacturer_name, distributer, medicine_name]
     command_string = ','.join(l)
-    distributerAddress = getDistributerAddress(distributer)
-    manufacturerAddress = getManufacturerAddress(manufacturerName)
+    distributer_address = getDistributerAddress(distributer)
+    manufacturer_address = getManufacturerAddress(manufacturer_name)
     input_address_list = [
-        DISTRIBUTERS_TABLE, MANUFACTURERS_TABLE, manufacturerAddress, distributerAddress]
-    output_address_list = [manufacturerAddress, distributerAddress]
+        DISTRIBUTERS_TABLE, MANUFACTURERS_TABLE, manufacturer_address, distributer_address]
+    output_address_list = [manufacturer_address, distributer_address]
     response = wrap_and_send("giveTo", command_string,
                              input_address_list, output_address_list, wait=5)
-    # print ("give response: {}".format(response))
     return yaml.safe_load(response)['data'][0]['status']
 
 
-def listClients(clientAddress):
-    print("list clients: {}".format(clientAddress))
-    result = send_to_rest_api(f"state/{clientAddress}")
+def listClients(client_address):
+    print(f"list clients: {client_address}")
+    result = send_to_rest_api(f"state/{client_address}")
     try:
         return (base64.b64decode(yaml.safe_load(result)["data"])).decode()
     except BaseException as e:
@@ -227,7 +158,7 @@ def listClients(clientAddress):
 
 
 def send_to_rest_api(suffix, data=None, content_type=None):
-    print("Running at function: send_to_rest_api()")
+    print("--------------------------------Running at function: send_to_rest_api()--------------------------------")
 
     if base_url is None:
         raise ValueError(
@@ -255,25 +186,27 @@ def send_to_rest_api(suffix, data=None, content_type=None):
             print("\nRequest sent via GET\n")
 
         # Raise for status to catch HTTP errors
-        result.raise_for_status()
 
+        if result.status_code == 404:
+            return "Not Found"
+        result.raise_for_status()
         # Log more information about the response
         logging.info("Response status: %s", result.status_code)
         logging.info("Response body: %s", result.text)
 
     except requests.ConnectionError as err:
         logging.error("Failed to connect to %s: %s", url, err)
-        raise Exception("Failed to connect to %s: %s", url, err)
+        raise Exception(f"Failed to connect to {url}: {err}")
     except requests.Timeout as err:
         logging.error(
             "Timeout occurred when trying to connect to %s: %s", url, err)
-        raise Exception("Timeout occurred: %s", err)
+        raise Exception(f"Timeout occurred: {err}")
     except requests.HTTPError as err:
         logging.error("HTTP error occurred: %s", err)
-        raise Exception("HTTP error: %s", err)
+        raise Exception(f"HTTP error: {err}")
     except Exception as err:
         logging.error("An error occurred:%s", err)
-        raise Exception("An error occurred: %s", err)
+        raise Exception(f"An error occurred: {err}")
 
     return result.text
 
@@ -285,11 +218,11 @@ def wait_for_status(batch_id, result, wait=10):
     if wait and wait > 0:
         waited = 0
         start_time = time.time()
-        logging.info('url : ' + base_url +
-                     "batch_statuses?id={}&wait={}".format(batch_id, wait))
+        logging.info("url : %s batch_statuses?id=%s&wait=%s",
+                     base_url, batch_id, wait)
         while waited < wait:
             result = send_to_rest_api(
-                "batch_statuses?id={}&wait={}".format(batch_id, wait))
+                f"batch_statuses?id={batch_id}&wait={wait}")
             status = yaml.safe_load(result)['data'][0]['status']
             waited = time.time() - start_time
 
@@ -305,9 +238,9 @@ def wait_for_status(batch_id, result, wait=10):
 def wrap_and_send(action, data, input_address_list, output_address_list, wait=None):
     '''Create a transaction, then wrap it in a batch.
     '''
-    print("Running at funtion: wrap_and_send()")
+    print("--------------------------------Running at funtion: wrap_and_send()-----------------------------------------")
     payload = ",".join([action, str(data)])
-    logging.info('payload: {}'.format(payload))
+    logging.info('payload: %s', payload)
 
     # Construct the address where we'll store our state.
     # Create a TransactionHeader.
@@ -348,96 +281,99 @@ def wrap_and_send(action, data, input_address_list, output_address_list, wait=No
     # Create a Batch List from Batch above
     batch_list = BatchList(batches=[batch])
     batch_id = batch_list.batches[0].header_signature
-    print(batch_id, "batch_lists", batch_list)
+    print("-------------------------------------Batch_id------------------------------------------------- \n",
+          batch_id, "\nbatch_lists", batch_list)
     # Send batch_list to the REST API
     result = send_to_rest_api(
         "batches", batch_list.SerializeToString(), 'application/octet-stream')
-
+    print("Result: ", result)
     # Wait until transaction status is COMMITTED, error, or timed out
     return wait_for_status(batch_id, result, wait=wait)
 
 
 if __name__ == '__main__':
     try:
+        # Thiết lập logger
+        setup_logger()
         opts, args = parser.parse_args()
         base_url = opts.url
         if sys.argv[1] == "addManufacturer":
-            logging.info('add manufacture command: ' + sys.argv[2])
+            logging.info('add manufacture command: %s', sys.argv[2])
             result = addManufacturer(sys.argv[2])
             if result == 'COMMITTED':
-                logging.info(sys.argv[2] + " added.")
+                logging.info(sys.argv[2], "%s added.")
                 print("Added " + sys.argv[2])
             else:
-                logging.info(sys.argv[2] + " not added.")
-                print("\n{} not added ".format(sys.argv[2]))
+                logging.info(sys.argv[2], " %s not added.")
+                print(f"\n{sys.argv[2]} not added")
         elif sys.argv[1] == "addDistributer":
-            logging.info('add distributer command: ' + sys.argv[2])
+            logging.info('add distributer command: %s', sys.argv[2])
             result = addDistributer(sys.argv[2])
             if result == 'COMMITTED':
-                logging.info(sys.argv[2] + " added.")
+                logging.info(sys.argv[2], " %s added.")
                 print("Added " + sys.argv[2])
             else:
-                logging.info(sys.argv[2] + " not added.")
-                print("\n{} not added ".format(sys.argv[2]))
+                logging.info(sys.argv[2], " %s not added.")
+                print(f"\n{sys.argv[2]} not added")
         elif sys.argv[1] == "addPharmacy":
-            logging.info('add Pharmacy command: ' + sys.argv[2])
+            logging.info('add Pharmacy command: %s', sys.argv[2])
             result = addPharmacy(sys.argv[2])
             if result == 'COMMITTED':
-                logging.info(sys.argv[2] + " added.")
+                logging.info(sys.argv[2], " %s added.")
                 print("Added " + sys.argv[2])
             else:
-                logging.info(sys.argv[2] + " not added.")
-                print("\n{} not added ".format(sys.argv[2]))
+                logging.info(sys.argv[2], " %s not added.")
+                print(f"\n{sys.argv[2]} not added")
         elif sys.argv[1] == "manufacture":
-            logging.info('manufacture command: ' + sys.argv[2])
+            logging.info('manufacture command: %s', sys.argv[2])
             result = manufacture(sys.argv[2], sys.argv[3])
             if result == 'COMMITTED':
-                logging.info(sys.argv[2] + " manufactured.")
+                logging.info(sys.argv[2], " %s manufactured.")
                 print("Manufactured " + sys.argv[2])
             else:
-                logging.info(sys.argv[2] + " not manufactured.")
-                print("\n{} not manufctured ".format(sys.argv[3]))
+                logging.info(sys.argv[2], " %s not manufactured.")
+                print("\n{sys.argv[3]} not manufctured ")
         elif sys.argv[1] == "giveto":
-            logging.info('giveto command: distributer: {}, medicine: {}'.format(
-                sys.argv[2], sys.argv[3]))
+            logging.info(
+                'giveto command: distributer: %s, medicine: %s', sys.argv[2], sys.argv[3])
             result = giveToDistributor(sys.argv[2], sys.argv[3], sys.argv[4])
             if result == 'COMMITTED':
                 logging.info(
-                    'Distributed - distributer: {}, medicine: {}'.format(sys.argv[2], sys.argv[3]))
+                    'Distributed - distributer: %s, medicine: %s', sys.argv[2], sys.argv[3])
                 print(
-                    'Distributed - distributer: {}, medicine: {}'.format(sys.argv[2], sys.argv[3]))
+                    f'Distributed - distributer: {sys.argv[2]}, medicine: {sys.argv[3]}')
             else:
                 logging.info(
-                    "Didn't Distributed - distributer: {}, medicine: {}".format(sys.argv[2], sys.argv[3]))
+                    "Didn't Distributed - distributer: %s, medicine: %s", sys.argv[2], sys.argv[3])
                 print(
-                    "Didn't Distributed - distributer: {}, medicine: {}".format(sys.argv[2], sys.argv[3]))
+                    f"Didn't Distributed - distributer:{sys.argv[2]}, medicine: {sys.argv[3]}")
         elif sys.argv[1] == "listManufacturers":
             logging.info('command : listManufacturers')
             result = listClients(MANUFACTURERS_TABLE)
-            print('The Manufacturers: {}'.format(result))
+            print(f'The Manufacturers: {result}')
         elif sys.argv[1] == "listDistributers":
             logging.info('command : listDistributers')
             result = listClients(DISTRIBUTERS_TABLE)
-            print('The Distributers: {}'.format(result))
+            print(f'The Distributers: {result}')
         elif sys.argv[1] == "listPharmacies":
             logging.info('command : listPharmacies')
             result = listClients(PHARMACY_TABLE)
-            print('The Pharmacies: {}'.format(result))
+            print(f'The Pharmacies: {result}')
         elif sys.argv[1] == "seeManufacturer":
             logging.info('command : seeManufacturer')
             address = getManufacturerAddress(sys.argv[2])
             result = listClients(address)
-            print('content: {}'.format(result))
+            print(f'content: {result}')
         elif sys.argv[1] == "seeDistributer":
             logging.info('command : seeDistributer')
             address = getDistributerAddress(sys.argv[2], 'request')
             result = listClients(address)
-            print('content: {}'.format(result))
+            print(f'content: {result}')
         else:
-            print('Invalid command.\nValid commands: \n\taddManufacturer manufacturerName, addDistributer name, \n\tmanufacture mname medicine name, giveto mname dname medicineName, \n\tlistManufacturers, listDistributers, seeManufacturer mname, seeDistributer dname')
+            print('Invalid command.\nValid commands: \n\taddManufacturer manufacturer_name, addDistributer name, \n\tmanufacture mname medicine name, giveto mname dname medicine_name, \n\tlistManufacturers, listDistributers, seeManufacturer mname, seeDistributer dname')
     except IndexError as i:
         logging.debug('Invalid command')
-        print('Invalid command.\nValid commands: \n\taddManufacturer manufacturerName, addDistributer name, \n\tmanufacture mname medicine name, giveto mname dname medicineName, \n\tlistManufacturers, listDistributers, seeManufacturer mname, seeDistributer dname')
+        print('Invalid command.\nValid commands: \n\taddManufacturer manufacturer_name, addDistributer name, \n\tmanufacture mname medicine name, giveto mname dname medicine_name, \n\tlistManufacturers, listDistributers, seeManufacturer mname, seeDistributer dname')
         print(i)
     except Exception as e:
         print(e)
