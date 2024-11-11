@@ -23,7 +23,7 @@ def recieve_from_manufacturer():
     action = request.form['choice']
     k = d.getFromManufacturer(manu_name, dist_name, batchid, date, action)
     if (k == "COMMITTED"):
-        return render_template('alert.html', command="SENT THE REQUIRED BATCH SUCCESSFULLY", port="5020")
+        return render_template('alert.html', command=f"{action} successfully", port="5020")
     else:
         return render_template('alert.html', command="SOMETHING FAILED! \nOOPS!", port="5020")
 
@@ -37,7 +37,7 @@ def send_to_pharmacy():
     batchid = request.form['batchid']
     k = d.giveToPharmacy(dist_name, pharma_name, batchid, date)
     if (k == "COMMITTED"):
-        return render_template('alert.html', command="SENT TO PHARMACY", port="5020")
+        return render_template('alert.html', command="SENT TO PHARMACY SUCCESSFULLY", port="5020")
     else:
         return render_template('alert.html', command="SOMETHING FAILED! \nOOPS!", port="5020")
 
@@ -47,25 +47,31 @@ def list_medicines():
     m = distributer()
     dist_name = request.form['distributer']
     result = m.listMedicines(dist_name)
-    escaped_result = None
-    if 'No' in result:
-        escaped_result = result
+    if result is None:
+        return render_template('alert.html', command="No Medicines", port="5020")
+    if result.empty:
+        return render_template('alert.html', command="No Medicines", port="5020")
     else:
-        escaped_result = ', '.join(result)
-    return render_template('alert.html', command=escaped_result, port="5020")
+        result.insert(0, 'ID', range(1, len(result) + 1))
+        columns = result.columns.tolist()
+        data_list = result.to_dict(orient="records")
+        return render_template('data.html', data=data_list, columns=columns, name="Medicines", title='Distributer', port="5020")
 
 
 @app.route('/listMedReq', methods=['GET', 'POST'])
 def list_medicines_request():
     m = distributer()
     dist_name = request.form['distributer']
-    result = m.listMedicines(dist_name, 'request')
-    escaped_result = None
-    if 'No' in result:
-        escaped_result = result
+    result = m.listMedicines_v1(dist_name, 'request')
+    if result is None:
+        return render_template('alert.html', command="No Medicines", port="5020")
+    if result.empty:
+        return render_template('alert.html', command="No Medicines", port="5020")
     else:
-        escaped_result = ', '.join(result)
-    return render_template('alert.html', command=escaped_result, port="5020")
+        result.insert(0, 'ID', range(1, len(result) + 1))
+        columns = result.columns.tolist()
+        data_list = result.to_dict(orient="records")
+        return render_template('data.html', data=data_list, columns=columns, name="Requests", title='Distributer', port="5020")
 
 
 if __name__ == '__main__':

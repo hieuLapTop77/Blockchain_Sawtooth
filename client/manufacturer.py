@@ -46,15 +46,15 @@ def list_medicines():
     m = manufacturer()
     manu_name = request.form['manufacturer']
     result = m.listMedicines(manu_name)
-    escaped_result = None
-    if 'No' in result:
-        escaped_result = result
-    else:
-        escaped_result = ', '.join(result)
-    if escaped_result:
-        return render_template('alert.html', command=escaped_result, port="5010")
-    else:
+    if result is None:
         return render_template('alert.html', command="No Medicines", port="5010")
+    if result.empty:
+        return render_template('alert.html', command="No Medicines", port="5010")
+    else:
+        result.insert(0, 'ID', range(1, len(result) + 1))
+        columns = result.columns.tolist()
+        data_list = result.to_dict(orient="records")
+        return render_template('data.html', data=data_list, columns=columns, name="Medicines", title='Manufacturer', port="5010")
 
 
 if __name__ == '__main__':

@@ -235,10 +235,83 @@ def wait_for_status(batch_id, result, wait=10):
         return result
 
 
+def wait_for_status_v1(batch_id, result, wait=10, batch_ids=None):
+    '''Wait until transaction status is not PENDING (COMMITTED or error).
+        'wait' is time to wait for status, in seconds.
+    '''
+    if wait and wait > 0:
+        waited = 0
+        start_time = time.time()
+        logging.info("url : %s batch_statuses?id=%s&wait=%s",
+                     base_url, batch_id, wait)
+        while waited < wait:
+            result = send_to_rest_api(
+                f"batch_statuses?id={batch_id}&wait={wait}")
+            status = yaml.safe_load(result)['data'][0]['status']
+            waited = time.time() - start_time
+
+            if status != 'PENDING' or status != 'INVALID':
+                return batch_ids
+        logging.debug(
+            "Transaction timed out after waiting {wait} seconds.")
+        return "Transaction timed out after waiting {wait} seconds."
+    else:
+        return result
+
+
 def wrap_and_send(action, data, input_address_list, output_address_list, wait=None):
     '''Create a transaction, then wrap it in a batch.
     '''
     print("--------------------------------Running at funtion: wrap_and_send()-----------------------------------------")
+    payload = ",".join([action, str(data)])
+    logging.info('payload: %s', payload)
+
+    # Construct the address where we'll store our state.
+    # Create a TransactionHeader.
+    header = TransactionHeader(
+        signer_public_key=public_key,
+        family_name=family_name,
+        family_version="1.0",
+        inputs=input_address_list,         # input_and_output_address_list,
+        outputs=output_address_list,       # input_and_output_address_list,
+        dependencies=[],
+        payload_sha512=hash(payload),
+        batcher_public_key=public_key,
+        nonce=random.random().hex().encode()
+    ).SerializeToString()
+
+    transaction = Transaction(
+        header=header,
+        payload=payload.encode(),
+        header_signature=signer.sign(header)
+    )
+
+    transaction_list = [transaction]
+    header = BatchHeader(
+        signer_public_key=public_key,
+        transaction_ids=[txn.header_signature for txn in transaction_list]
+    ).SerializeToString()
+
+    batch = Batch(
+        header=header,
+        transactions=transaction_list,
+        header_signature=signer.sign(header)
+    )
+
+    # Create a Batch List from Batch above
+    batch_list = BatchList(batches=[batch])
+    batch_id = batch_list.batches[0].header_signature
+
+    result = send_to_rest_api(
+        "batches", batch_list.SerializeToString(), 'application/octet-stream')
+    # Wait until transaction status is COMMITTED, error, or timed out
+    return wait_for_status(batch_id, result, wait=wait)
+
+
+def wrap_and_send_v1(action, data, input_address_list, output_address_list, wait=None):
+    '''Create a transaction, then wrap it in a batch.
+    '''
+    print("--------------------------------Running at funtion: wrap_and_send_v1()-----------------------------------------")
     payload = ",".join([action, str(data)])
     logging.info('payload: %s', payload)
 
@@ -278,17 +351,20 @@ def wrap_and_send(action, data, input_address_list, output_address_list, wait=No
         header_signature=signer.sign(header)
     )
 
-    # Create a Batch List from Batch above
     batch_list = BatchList(batches=[batch])
     batch_id = batch_list.batches[0].header_signature
-    print("-------------------------------------Batch_id------------------------------------------------- \n",
-          batch_id, "\nbatch_lists", batch_list)
-    # Send batch_list to the REST API
+
+    batch_ids = None
+    try:
+        payload = batch_list.batches[0].transactions[0].payload
+        decoded_payload = payload.decode('utf-8')
+        batch_ids = decoded_payload.split(",")[3]
+    except Exception as e:
+        print("Error: ", e)
     result = send_to_rest_api(
         "batches", batch_list.SerializeToString(), 'application/octet-stream')
-    print("Result: ", result)
     # Wait until transaction status is COMMITTED, error, or timed out
-    return wait_for_status(batch_id, result, wait=wait)
+    return wait_for_status_v1(batch_id, result, wait=wait, batch_ids=batch_ids)
 
 
 if __name__ == '__main__':

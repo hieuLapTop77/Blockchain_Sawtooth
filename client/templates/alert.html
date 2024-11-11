@@ -1,13 +1,121 @@
+<!DOCTYPE html>
 <html>
-    <body>
-   
-    
-    <script type="text/javascript">
-   
-    window.alert('{{command}}'); 
-    window.location.href = "http://localhost:"+'{{port}}';
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thông báo</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #2196F3, #4CAF50);
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .notification-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            width: 90%;
+            max-width: 400px;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .notification-icon {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .notification-icon i {
+            font-size: 48px;
+            color: #2196F3;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .notification-message {
+            text-align: center;
+            color: #333;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: #2196F3;
+            width: 100%;
+            transform-origin: left;
+            animation: progress 3s linear forwards;
+        }
+
+        @keyframes progress {
+            to { transform: scaleX(0); }
+        }
+
+        .loading-dots:after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification-container">
+        <div class="notification-icon">
+            <i class="material-icons">notifications_active</i>
+        </div>
+        <div class="notification-message">
+            <span id="message"></span>
+            <span class="loading-dots"></span>
+        </div>
+        <div class="progress-bar"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let message = '{{command}}';
+            document.getElementById('message').textContent = message;
+            
+            setTimeout(function() {
+                window.location.href = "http://localhost:" + '{{port}}';
+            }, 3000);
+        });
     </script>
-    
-    
-    </body>
+</body>
 </html>

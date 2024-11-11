@@ -2,14 +2,11 @@
 <html>
 
 <head>
-  <title>Pharmacies</title>
-  <meta name="viewport" content="width = device-width, initial-scale = 1">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+  <title>Pharmacy Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
 
   <!-- Compiled and minified JavaScript -->
@@ -26,31 +23,138 @@
   </script>
 
   <style>
-    * {
-      font-family: "courier new"
-    }
-
-    .parallax-container {
-
-      height: "100%";
-    }
-
-    input {
-      font-size: 20px;
-    }
-
-    label {
-      font-size: 20px;
-    }
-
     body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f5f5;
       display: flex;
       min-height: 100vh;
       flex-direction: column;
+      background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+        url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+      background-attachment: fixed;
     }
 
     main {
       flex: 1 0 auto;
+      padding: 20px 0;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+      color: white;
+      padding: 20px 0;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .action-btn {
+      width: 100%;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 24px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #1976d2;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .action-btn:hover {
+      background-color: #1976d2;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-btn i {
+      margin-right: 12px;
+    }
+
+    .modal {
+      border-radius: 12px;
+      max-height: 90%;
+      background-color: rgba(255, 255, 255, 0.98);
+    }
+
+    .modal .modal-content {
+      padding: 24px;
+    }
+
+    .input-field input {
+      border-bottom: 2px solid #9e9e9e;
+    }
+
+    .input-field input:focus {
+      border-bottom: 2px solid #1976d2;
+      box-shadow: 0 1px 0 0 #1976d2;
+    }
+
+    .submit-btn {
+      background-color: #1976d2;
+      margin-top: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .submit-btn:hover {
+      background-color: #1565c0;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    [type="radio"]:checked+span:after {
+      background-color: #1976d2;
+      border: 2px solid #1976d2;
+    }
+
+    .section {
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 16px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Animation for buttons */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .action-btn {
+      animation: fadeInUp 0.5s ease backwards;
+    }
+
+    .action-btn:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .action-btn:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .action-btn:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .action-btn:nth-child(4) {
+      animation-delay: 0.4s;
     }
   </style>
 
@@ -78,141 +182,150 @@
 </head>
 
 <body>
-  <div class="center-align">
-    <h4 class="!"><b>Pharmacy's Homepage</b></h4>
-  </div>
-  <div class="parallax-container">
-    <div class="parallax"><img src="https://funkyimg.com/i/2SHP8.png"></div>
-
-    <div class="row">
-      <br />
-      <br />
-      <div class="center-align col s4">
-        <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id01"><i
-            class="material-icons left">call_received</i>Reject/Accept shipment</a><br /><br />
-
-        <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id04"><i
-            class="material-icons left">list</i>List Medicines</a><br /><br />
-        <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id06"><i
-            class="material-icons left">list</i>List Medicines Request</a><br /><br />
-        <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id05"><i
-            class="material-icons left">list</i>Tracking medicines</a><br /><br />
-      </div>
-    </div>
-    <a class="modal-trigger" href="#id01"></a>
-    <div id="id01" class="modal" style="width:50%;height:100%">
-
-      <div class="container">
-        <br />
-
-        <form action="http://localhost:5030/getFromDistributer" method="POST">
-          <h6><b>Please select an option given below</b></h6>
-
-          <div>
-            <input type="radio" id="check" class="group1 blue-text text-darken-2 white " name="choice" value="Accept">
-            <label for="check">Accept</label>
-            <input type="radio" id="checkr" class="group1 blue-text text-darken-2 white" name="choice" value="Reject">
-            <label for="checkr">Reject</label>
-            <h6><b>Distributor<b>
-                  <input type="text" name="distributer" placeholder="Enter the distributor's  name" /></h6>
-            <h6><b>Batch ID<b>
-                  <input type="text" name='batchid' placeholder="Enter the Batch ID" /></h6>
-            <h6><b>Date<b>
-                  <input type="text" name="date" placeholder="Enter the Date" /></h6>
-            <h6><b>Pharmacy<b>
-                  <input type="text" name="pharmacy" placeholder="Enter the pharmacy name" /></h6>
-
-          </div>
-          <br />
-          <br />
-          <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-            type="submit" name="action">Submit
-            <i class="material-icons right">send</i>
-          </button>
-          <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
-            onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
-            target="_self">Close</a>
-        </form>
-      </div>
-    </div>
-
-
-    <a class="modal-trigger" href="#id02"></a>
-    <div id="id02" class="modal" style="width:50%;height:60%">
-
-      <div class="container">
-        <br />
-
-        <form action="http://localhost:5030/result" method="POST">
-
-
-          <h6><b>Distributor's name<b>
-                <input type="text" placeholder="Enter the distributors name" /></h6>
-          <h6><b>pharmacies's name<b>
-                <input type="text" placeholder="Enter the pharmacies name" /></h6>
-          <h6><b>Medicine<b>
-                <input type="text" placeholder="Enter the medicine name" /></h6>
-
-          <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-            type="submit" name="action">Submit
-            <i class="material-icons right">send</i>
-          </button>
-          <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
-            onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
-            target="_self">Close</a>
-        </form>
-      </div>
-    </div>
-  </div>
-  <a class="modal-trigger" href="#id04"></a>
-  <div id="id04" class="modal" style="width:50%;height:50%">
+  <header class="header">
     <div class="container">
+      <h4 class="center-align" style="margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+        <i class="material-icons" style="vertical-align: middle;">local_pharmacy</i>
+        Pharmacy Portal
+      </h4>
+    </div>
+  </header>
+  <main class="container">
+    <div class="section">
+      <div class="action-buttons">
+        <a class="action-btn waves-effect modal-trigger" href="#id01">
+          <i class="material-icons">call_received</i>
+          <span>Reject/Accept Shipment</span>
+        </a>
+        <a class="action-btn waves-effect modal-trigger" href="#id04">
+          <i class="material-icons">list</i>
+          <span>List Medicines</span>
+        </a>
+        <a class="action-btn waves-effect modal-trigger" href="#id06">
+          <i class="material-icons">assignment</i>
+          <span>List Medicine Requests</span>
+        </a>
+        <a class="action-btn waves-effect modal-trigger" href="#id05">
+          <i class="material-icons">track_changes</i>
+          <span>Tracking medicines</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal for Reject/Accept shipment -->
+  <div id="id01" class="modal">
+    <div class="modal-content">
+      <h5>Shipment Management</h5>
+      <form action="http://localhost:5030/getFromDistributer" method="POST">
+        <p>Please select an option:</p>
+        <p>
+          <label>
+            <input type="radio" name="choice" value="Accept" class="with-gap">
+            <span>Accept</span>
+          </label>
+        </p>
+        <p>
+          <label>
+            <input type="radio" name="choice" value="Reject" class="with-gap">
+            <span>Reject</span>
+          </label>
+        </p>
+        <div class="input-field">
+          <input type="text" name="distributer" id="distributor">
+          <label for="distributor">Distributor Name</label>
+        </div>
+        <div class="input-field">
+          <input type="text" name="batchid" id="batchid">
+          <label for="batchid">Batch ID</label>
+        </div>
+        <div class="input-field">
+          <input type="date" name="date" id="date">
+          <label for="date">Date</label>
+        </div>
+        <div class="input-field">
+          <input type="text" name="pharmacy" id="pharmacy">
+          <label for="pharmacy">Pharmacy Name</label>
+        </div>
+        <button class="btn waves-effect waves-light submit-btn" type="submit">
+          Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
+  </div>
+
+  <!-- Modal for List Medicines -->
+  <div id="id04" class="modal">
+    <div class="modal-content">
+      <h5>List Medicines</h5>
       <form action="http://localhost:5030/listMed" method="POST">
-        <h6><b>Pharmacy<b>
-              <input type="text" name="pharmacy" placeholder="Enter the phamracy's name" /></h6>
-        <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-          type="submit" name="action">Submit
+        <div class="input-field">
+          <input type="text" name="pharmacy" id="pharmacy-list">
+          <label for="pharmacy-list">Pharmacy Name</label>
+        </div>
+        <button class="btn waves-effect waves-light submit-btn" type="submit">
+          Submit
           <i class="material-icons right">send</i>
-        </button>
-
         </button>
       </form>
     </div>
-  </div>
-
-  <a class="modal-trigger" href="#id05"></a>
-  <div id="id05" class="modal" style="width:50%;height:60%">
-    <div class="container">
-      <br />
-      <form action="http://localhost:5030/track" method="POST">
-        <h6><b>Batch ID<b>
-              <input type="text" name="batchid" placeholder="Enter the Batch ID" /></h6>
-
-
-        <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-          type="submit" name="action">Submit
-          <i class="material-icons right">send</i>
-        </button>
-        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
-          onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
-          target="_self">Close</a>
-      </form>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
     </div>
   </div>
 
-  <a class="modal-trigger" href="#id06"></a>
-  <div id="id06" class="modal" style="width:50%;height:50%">
-    <div class="container">
+  <!-- Modal for List Medicine Requests -->
+  <div id="id06" class="modal">
+    <div class="modal-content">
+      <h5>List Medicine Requests</h5>
       <form action="http://localhost:5030/listMedReq" method="POST">
-        <h6><b>Pharmacy<b>
-              <input type="text" name="pharmacy" placeholder="Enter the phamracy's name" /></h6>
-        <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-          type="submit" name="action">Submit
+        <div class="input-field">
+          <input type="text" name="pharmacy" id="pharmacy-req">
+          <label for="pharmacy-req">Distributor Name</label>
+        </div>
+        <button class="btn waves-effect waves-light submit-btn" type="submit">
+          Submit
           <i class="material-icons right">send</i>
-        </button>
-
         </button>
       </form>
     </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
   </div>
+
+  <!-- Modal for tracking -->
+  <div id="id05" class="modal">
+    <div class="modal-content">
+      <h5>List Medicines</h5>
+      <form action="http://localhost:5030/track" method="POST">
+        <div class="input-field">
+          <input type="text" name="batchid" id="batchid">
+          <label for="batchid">Batch ID</label>
+        </div>
+        <button class="btn waves-effect waves-light submit-btn" type="submit">
+          Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var modals = document.querySelectorAll('.modal');
+      M.Modal.init(modals);
+      
+      var datepickers = document.querySelectorAll('.datepicker');
+      M.Datepicker.init(datepickers);
+    });
+  </script>
 </body>

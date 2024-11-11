@@ -1,193 +1,245 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Admin</title>
-    <meta name="viewport" content="width = device-width, initial-scale = 1">
+    <title>Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
-
-
-    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
-    </script>
+
     <script>
         $(document).ready(function () {
             $('.modal').modal();
-            $('.modal').closeModal();
+            $('.parallax').parallax();
         });
-
     </script>
 
     <style>
-        * {
-            font-family: "courier new"
-        }
-
-        .parallax-container {
-
-            height: "100%";
-        }
-
-        input {
-            font-size: 20px;
-        }
-
-        label {
-            font-size: 20px;
-        }
-
         body {
+            font-family: 'Roboto', sans-serif;
             display: flex;
             min-height: 100vh;
             flex-direction: column;
+            background: url('https://img.freepik.com/free-photo/medicine-capsules-global-health-with-geometric-pattern-digital-remix_53876-126742.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            backdrop-filter: blur(8px); /* Điều chỉnh độ mờ */
         }
+
+        /* Optional overlay for added dimming effect */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.3); /* Điều chỉnh độ tối của overlay */
+            z-index: -1; /* Đặt dưới nội dung */
+        }
+
+        .action-container {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
 
         main {
             flex: 1 0 auto;
         }
-    </style>
 
-    <script>
+        .header {
+            background-color: #1976d2;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
-        $(document).ready(function () {
-            $('.parallax').parallax();
-        });
+        .header h4 {
+            margin: 0;
+            font-weight: 300;
+        }
 
-    </script>
-    <style>
+        .action-container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn-custom {
+            width: 100%;
+            height: 54px;
+            line-height: 54px;
+            font-size: 16px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-custom i {
+            margin-right: 8px;
+        }
+
         .modal {
-            max-height: 100%;
-            overflow: visible
+            border-radius: 8px;
+        }
+
+        .modal-content {
+            padding: 24px;
+        }
+
+        .modal-content h6 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #1976d2;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            margin-bottom: 20px;
+            padding: 0 10px;
+            border-radius: 4px;
+        }
+
+        .modal-content input:focus {
+            border-bottom: 2px solid #1976d2;
+        }
+
+        .modal-footer {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .list-button {
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-container {
+                padding: 15px;
+                margin: 10px;
+            }
         }
     </style>
 </head>
 
 <body>
-
-
-    <div class="center-align">
-        <h4 class="!"><b>Admin's Homepage</b></h4>
-
-    </div>
-
-    <div class="parallax-container">
-        <div class="parallax"><img src="https://funkyimg.com/i/2SHP8.png"></div>
-
-        <div class="row">
-            <br />
-            <br />
-            <div class="center-align col s4">
-                <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id02"><i
-                        class="material-icons left">add</i>Add manufacturers</a><br /><br />
-                <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id01"><i
-                        class="material-icons left">add</i>Add distributors</a><br /><br />
-                <a class="blue-text text-darken-2 white waves-effect waves-light btn" href="#id03"><i
-                        class="material-icons left">add</i>Add pharmacies<br />/pharmacies</a><br /><br />
-
-                <form action="http://localhost:5000/listManu" method="POST">
-
-                    <button
-                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-                        type="submit" name="action">List manufacturers
-                        <i class="material-icons right">list</i>
-                    </button>
-                </form>
-                <br />
-                <form action="http://localhost:5000/listDist" method="POST">
-
-                    <button
-                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-                        type="submit" name="action">List distributors
-                        <i class="material-icons right">list</i>
-                    </button>
-                </form>
-                <br />
-                <form action="http://localhost:5000/listPharma" method="POST">
-                    <button
-                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-                        type="submit" name="action">List pharmacies
-                        <i class="material-icons right">list</i>
-                    </button>
-                </form>
-                <br />
-            </div>
-        </div>
-
-
-        <a class="modal-trigger" href="#id01"></a>
-        <div id="id01" class="modal" style="width:50%;height:40%">
-
-            <div class="container">
-                <br />
-
-                <form action="http://localhost:5000/addDist" method="POST">
-
-                    <h6><b>Distributor's name<b>
-                                <input type="text" name="distributer" placeholder="Enter the distributor's name" /></h6>
-                    <button
-                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-                        type="submit" name="action">Submit
-                        <i class="material-icons right">send</i>
-                    </button>
-                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
-                        onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
-                        target="_self">Close</a>
-
-                </form>
-            </div>
-        </div>
-
-        <a class="modal-trigger" href="#id02"></a>
-        <div id="id02" class="modal" style="width:50%;height:60%">
-
-            <div class="container">
-                <br />
-
-                <form action="http://localhost:5000/addManu" method="POST">
-                    <h6><b>Manufacturer's name<b>
-                                <input type="text" name="manufacturer" placeholder="Enter the Manufacturer's name" />
-                    </h6>
-
-                    <button
-                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-                        type="submit" name="action">Submit
-                        <i class="material-icons right">send</i>
-                    </button>
-                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
-                        onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
-                        target="_self">Close</a>
-
-                </form>
-            </div>
-        </div>
-        <a class="modal-trigger" href="#id03"></a>
-        <div id="id03" class="modal" style="width:50%;height:50%">
-            <div class="container">
-                <br />
-
-                <form action="http://localhost:5000/addPharma" method="POST">
-                    <h6><b>Pharmacy's name<b>
-                                <input type="text" name="pharmacy" placeholder="Enter the Pharmacy's name" /></h6>
-
-                    <button
-                        class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light"
-                        type="submit" name="action">Submit
-                        <i class="material-icons right">send</i>
-                    </button>
-                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"
-                        onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal"
-                        target="_self">Close</a>
-
-                </form>
-            </div>
+    <div class="header">
+        <div class="center-align">
+            <h4>Admin Dashboard</h4>
         </div>
     </div>
+
+    <div class="action-container">
+        <div class="btn-group">
+            <a class="btn-custom blue darken-2 white-text waves-effect waves-light btn modal-trigger" href="#id02">
+                <i class="material-icons left">business</i>Add Manufacturers
+            </a>
+            <a class="btn-custom blue darken-2 white-text waves-effect waves-light btn modal-trigger" href="#id01">
+                <i class="material-icons left">local_shipping</i>Add Distributors
+            </a>
+            <a class="btn-custom blue darken-2 white-text waves-effect waves-light btn modal-trigger" href="#id03">
+                <i class="material-icons left">local_pharmacy</i>Add Pharmacies
+            </a>
+        </div>
+
+        <div class="btn-group">
+            <form action="http://localhost:5000/listManu" method="POST">
+                <button class="btn-custom blue darken-2 white-text waves-effect waves-light btn" type="submit">
+                    <i class="material-icons left">list</i>List Manufacturers
+                </button>
+            </form>
+            <form action="http://localhost:5000/listDist" method="POST">
+                <button class="btn-custom blue darken-2 white-text waves-effect waves-light btn" type="submit">
+                    <i class="material-icons left">list</i>List Distributors
+                </button>
+            </form>
+            <form action="http://localhost:5000/listPharma" method="POST">
+                <button class="btn-custom blue darken-2 white-text waves-effect waves-light btn" type="submit">
+                    <i class="material-icons left">list</i>List Pharmacies
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="id01" class="modal">
+        <div class="modal-content">
+            <h6>Add New Distributor</h6>
+            <form action="http://localhost:5000/addDist" method="POST">
+                <div class="input-field">
+                    <input type="text" name="distributer" placeholder="Enter the distributor's name" required />
+                </div>
+                <button class="blue darken-2 white-text waves-effect waves-light btn" type="submit">
+                    <i class="material-icons left">send</i>Submit
+                </button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+
+    <div id="id02" class="modal">
+        <div class="modal-content">
+            <h6>Add New Manufacturer</h6>
+            <form action="http://localhost:5000/addManu" method="POST">
+                <div class="input-field">
+                    <input type="text" name="manufacturer" placeholder="Enter the manufacturer's name" required />
+                </div>
+                <button class="blue darken-2 white-text waves-effect waves-light btn" type="submit">
+                    <i class="material-icons left">send</i>Submit
+                </button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+
+    <div id="id03" class="modal">
+        <div class="modal-content">
+            <h6>Add New Pharmacy</h6>
+            <form action="http://localhost:5000/addPharma" method="POST">
+                <div class="input-field">
+                    <input type="text" name="pharmacy" placeholder="Enter the pharmacy's name" required />
+                </div>
+                <button class="blue darken-2 white-text waves-effect waves-light btn" type="submit">
+                    <i class="material-icons left">send</i>Submit
+                </button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
     </div>
 </body>
-
 </html>

@@ -27,7 +27,6 @@ class admin():
                                getManufacturerAddress(manufacturer_name)]
         response = wrap_and_send(
             "addManufacturer", manufacturer_name, input_address_list, output_address_list, wait=5)
-        print("manufacture response: ", response)
         return yaml.safe_load(response)['data'][0]['status']
 
     def addDistributer(self, distributer_name):
@@ -39,7 +38,6 @@ class admin():
                                dist_has_address, dist_req_address]
         response = wrap_and_send(
             "addDistributor", distributer_name, input_address_list, output_address_list, wait=5)
-        print("manufacture response: ", response)
         return yaml.safe_load(response)['data'][0]['status']
 
     def addPharmacy(self, pharmacy_name):
@@ -54,9 +52,7 @@ class admin():
         return yaml.safe_load(response)['data'][0]['status']
 
     def listClients(self, client_address):
-        print("Listing clients: ", client_address)
         result = send_to_rest_api(f"state/{client_address}")
-        print("Results: ", result)
         try:
             return (base64.b64decode(yaml.safe_load(result)["data"])).decode()
         except BaseException:

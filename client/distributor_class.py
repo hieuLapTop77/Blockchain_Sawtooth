@@ -1,4 +1,5 @@
 #!/bin/python3
+import pandas as pd
 import yaml
 
 from client import (
@@ -11,6 +12,7 @@ from client import (
     getPharmacyAddress,
     listClients,
     wrap_and_send,
+    wrap_and_send_v1,
 )
 
 
@@ -49,13 +51,24 @@ class distributer():
 
     def listMedicines(self, distributerName, qualifier='has'):
         address = getDistributerAddress(distributerName, qualifier)
-        print("listMedicines address: ", address)
         result = listClients(address)
         if result:
-            print("listMedicines: ", result)
             list_add = list(dict.fromkeys(result.split(",")))
             data = [listClients(getBatchAddress(i)) for i in list_add]
             medicines = [item.split(',')[3].strip() for item in data]
-            return medicines
+            df = pd.DataFrame({'Medicines': medicines, 'Batch id': list_add})
+            return df
         else:
-            return "No medicines"
+            return None
+
+    def listMedicines_v1(self, distributerName, qualifier='has'):
+        address = getDistributerAddress(distributerName, qualifier)
+        result = listClients(address)
+        if result:
+            list_add = list(dict.fromkeys(result.split(",")))
+            data = [listClients(getBatchAddress(i)) for i in list_add]
+            medicines = [item.split(',')[2].strip() for item in data]
+            df = pd.DataFrame({'Medicines': medicines, 'Batch id': list_add})
+            return df
+        else:
+            return None

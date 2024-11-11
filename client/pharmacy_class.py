@@ -1,4 +1,5 @@
 #!/bin/python3
+import pandas as pd
 import yaml
 
 from client import (
@@ -37,10 +38,23 @@ class pharmacy():
         if result:
             list_add = list(dict.fromkeys(result.split(",")))
             data = [listClients(getBatchAddress(i)) for i in list_add]
-            medicines = [item.split(',')[3].strip() for item in data]
-            return medicines
+            medicines = [item.split(',')[4].strip() for item in data]
+            df = pd.DataFrame({'Medicines': medicines, 'Batch id': list_add})
+            return df
         else:
-            return "No medicines"
+            return None
+
+    def listMedicines_v1(self, distributerName, qualifier='has'):
+        address = getPharmacyAddress(distributerName, qualifier)
+        result = listClients(address)
+        if result:
+            list_add = list(dict.fromkeys(result.split(",")))
+            data = [listClients(getBatchAddress(i)) for i in list_add]
+            medicines = [item.split(',')[3].strip() for item in data]
+            df = pd.DataFrame({'Medicines': medicines, 'Batch id': list_add})
+            return df
+        else:
+            return None
 
     def readMedicineBatch(self, batchid):
         address = getBatchAddress(batchid)
@@ -48,4 +62,4 @@ class pharmacy():
         if result:
             return result
         else:
-            return "No such medicine batch"
+            return None

@@ -2,6 +2,7 @@
 
 import os
 
+import pandas as pd
 from admin_class import admin
 from flask import Flask, render_template, request
 
@@ -60,7 +61,12 @@ def listManu():
     a = admin()
     try:
         result = a.listManufacturers()
-        return render_template('alert.html', command=result, port="5000")
+        list_ = result.split(",")
+        df = pd.DataFrame({"Manufacturers": list_})
+        df.insert(0, 'ID', range(1, len(df) + 1))
+        columns = df.columns.tolist()
+        data_list = df.to_dict(orient="records")
+        return render_template('data.html', data=data_list, columns=columns, name="Manufacturers", title='Admin', port="5000")
     except:
         return render_template('alert.html', command="No Manufacturers", port="5000")
 
@@ -70,7 +76,12 @@ def listDist():
     a = admin()
     try:
         result = a.listDistributers()
-        return render_template('alert.html', command=result, port="5000")
+        list_ = result.split(",")
+        df = pd.DataFrame({"Distributers": list_})
+        df.insert(0, 'ID', range(1, len(df) + 1))
+        columns = df.columns.tolist()
+        data_list = df.to_dict(orient="records")
+        return render_template('data.html', data=data_list, columns=columns, name="Distributers", title='Admin', port="5000")
     except:
         return render_template('alert.html', command="No Distributers", port="5000")
 
@@ -80,7 +91,12 @@ def listPharma():
     a = admin()
     try:
         result = a.listPharmacies()
-        return render_template('alert.html', command=result, port="5000")
+        list_ = result.split(",")
+        df = pd.DataFrame({"Pharmacies": list_})
+        df.insert(0, 'ID', range(1, len(df) + 1))
+        columns = df.columns.tolist()
+        data_list = df.to_dict(orient="records")
+        return render_template('data.html', data=data_list, columns=columns, name="Pharmacies", title='Admin', port="5000")
     except:
         return render_template('alert.html', command="No Pharmacies", port="5000")
 

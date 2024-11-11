@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>QR</title>
+  <meta name="viewport" content="width = device-width, initial-scale = 1">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  </script>
+  <script>
+    $(document).ready(function () {
+
+
+      $('.modal').modal();
+      $('.modal').closeModal();
+    });
+
+  </script>
+
+  <style>
+    * {
+      font-family: "courier new"
+    }
+
+    .parallax-container {
+
+      height: "100%";
+    }
+
+    input {
+      font-size: 20px;
+    }
+
+    label {
+      font-size: 20px;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1 0 auto;
+    }
+  </style>
+
+  <script>
+
+    $(document).ready(function () {
+      $('.parallax').parallax();
+    });
+    $(document).ready(function () {
+      $('.modal-trigger').leanModal();
+      $('select').material_select();
+    });
+    $(document).ready(function () {
+      $('select').formSelect();
+    });
+
+
+
+  </script>
+  <style>
+    .modal {
+      overflow: visible
+    }
+  </style>
+</head>
+<body>
+    <div class="center-align">
+        <h4 class="!"><b>QR Generator Homepage</b></h4>
+      </div>
+    <h6>QR Code Generator</h6>
+    <form action="/qr" method="get">
+        <label for="batch_id">Nhập batch ID:</label>
+        <input type="text" id="batch_id" name="batch_id" required>
+        <button class="blue-text text-darken-2 white waves-effect waves-light btn btn waves-effect waves-light" type="submit">Tạo QR Code</button>
+    </form>
+</body>
+</html>
